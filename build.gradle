@@ -10,13 +10,19 @@ sourceSets {
 	
 	main {
 		java {
-			srcDir 'src'
+			srcDir 'src/main'
 		}
+		resources {
+            srcDir 'res/main'
+        }
 	}
 
 	test {
 		java {
-			srcDir 'test'
+			srcDir 'src/test'
+		}
+		resources {
+			srcDir 'res/test'
 		}
 	}
 }
@@ -31,7 +37,6 @@ dependencies {
 	compile 'com.google.inject:guice:4.0'
 	compile 'commons-io:commons-io:2.4'
 	compile 'org.apache.commons:commons-lang3:3.4'
-	//compile 'com.google.code.gson:gson:2.3'
 	compile 'com.mashape.unirest:unirest-java:1.4.9'
 
 	testCompile 'org.easymock:easymock:3.3.1'

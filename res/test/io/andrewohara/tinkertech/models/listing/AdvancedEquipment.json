@@ -1,0 +1,32 @@
+{
+  "id": 202,
+  "url": "http://www.factoriomods.com/mods/advanced-equipment-by",
+  "categories": [
+    "equipment"
+  ],
+  "author": "jorgenRe",
+  "contact": "",
+  "title": "Advanced Equipment",
+  "name": "AdvancedEquipment",
+  "description": "Unofficial Advanced Equipments update for 0.12 http://www.factoriomods.com/mods/advanced-equipment",
+  "homepage": "",
+  "releases": [
+    {
+      "id": 242,
+      "version": "0.4.0",
+      "released_at": "2015-07-21T00:00:00.000Z",
+      "game_versions": [
+        "0.12.x"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "id": 248,
+          "name": "",
+          "mirror": "http://s3.amazonaws.com/factoriomods/mod_files/attachments/000/000/248/original/AdvancedEquipment_0.4.0.zip?1438488276",
+          "url": null
+        }
+      ]
+    }
+  ]
+}
