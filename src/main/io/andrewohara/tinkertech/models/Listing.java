@@ -12,11 +12,11 @@ public class Listing extends AbstractModStub {
 	public Listing(JSONObject root) {
 		super(root);
 	}
-	
+
 	public Release getLatestRelease() {
 		return getReleases().get(0);
 	}
-	
+
 	private List<Release> getReleases() {
 		List<Release> releases = new LinkedList<>();
 		for (Object release : root.getJSONArray("releases")) {
@@ -28,5 +28,18 @@ public class Listing extends AbstractModStub {
 	@Override
 	public Version getVersion() {
 		return getLatestRelease().getVersion();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Listing) {
+			return getName().equals(((Listing)obj).getName());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
 	}
 }

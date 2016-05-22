@@ -40,7 +40,7 @@ public class DownloaderUnitTest {
 	}
 	
 	@Test
-	public void Downloader_download_nullListing() throws IOException {
+	public void Downloader_download_nullListing() throws DownloadNotSupportedException {
 		Listing listing = null;
 
 		thrown.expect(NullPointerException.class);
@@ -48,11 +48,11 @@ public class DownloaderUnitTest {
 	}
 	
 	@Test
-	public void Downloader_download_unavailableSize() throws IOException {
+	public void Downloader_download_unavailableSize() throws DownloadNotSupportedException, IOException {
 		// Set expectations
 		InputStream stream = mocks.createMock(InputStream.class);
 		expect(stream.available()).andThrow(new IOException());
-		expect(webClient.getZipStream(listing.getLatestRelease().getDownloadUrl())).andReturn(stream);
+		expect(webClient.getZipStream(listing.getLatestRelease().getMirrorUrl())).andReturn(stream);
 		executor.execute(anyObject(Runnable.class));
 		
 		mocks.replay();
@@ -61,11 +61,11 @@ public class DownloaderUnitTest {
 	}
 	
 	@Test
-	public void Downloader_download_validAvailableSize() throws IOException {
+	public void Downloader_download_validAvailableSize() throws IOException, DownloadNotSupportedException {
 		// Set expectations
 		InputStream stream = mocks.createMock(InputStream.class);
 		expect(stream.available()).andReturn(1024);
-		expect(webClient.getZipStream(listing.getLatestRelease().getDownloadUrl())).andReturn(stream);
+		expect(webClient.getZipStream(listing.getLatestRelease().getMirrorUrl())).andReturn(stream);
 		executor.execute(anyObject(Runnable.class));
 		
 		mocks.replay();

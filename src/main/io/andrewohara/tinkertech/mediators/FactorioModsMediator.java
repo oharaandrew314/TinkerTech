@@ -3,8 +3,6 @@ package io.andrewohara.tinkertech.mediators;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -27,29 +25,16 @@ public class FactorioModsMediator {
 	public FactorioModsMediator(WebClient webClient) {
 		this.webClient = webClient;
 	}
-
-	public List<String> search(String query) throws IOException {
-		GetRequest request = Unirest.get(LIST_URL);
-		if (!StringUtils.isEmpty(query)) {
-			request.queryString("q", query);
-		}
-
-		List<String> titles = new LinkedList<String>();
-		for (Object listingObj : webClient.getJsonArray(request.getUrl())) {
-			JSONObject listing = (JSONObject) listingObj;
-			titles.add(listing.getString("title"));
-		}
-		return titles;
-	}
 	
-	public Stream<Listing> search2(String query) throws IOException {
+	public Stream<Listing> search(String query) throws IOException {
 		GetRequest request = Unirest.get(LIST_URL);
 		if (!StringUtils.isEmpty(query)) {
 			request.queryString("q", query);
 		}
 		
 		JSONArray jsonArray = webClient.getJsonArray(request.getUrl());
-		return StreamSupport.stream(jsonArray.spliterator(), false)
+		return StreamSupport
+				.stream(jsonArray.spliterator(), false)
 				.map(listingObject -> new Listing((JSONObject) listingObject));
 	}
 	

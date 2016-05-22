@@ -19,11 +19,6 @@ public class Mod extends AbstractModStub {
 		return Version.valueOf(root.getString("version"));
 	}
 	
-	@Override
-	public String toString() {
-		return String.format("%s v%s", getTitle(), getVersion());
-	}
-	
 	public void delete(Config config) throws IOException {
 		Files.delete(getDownloadPath(config));
 	}

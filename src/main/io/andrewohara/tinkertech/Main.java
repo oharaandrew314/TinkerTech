@@ -14,7 +14,6 @@ import io.andrewohara.tinkertech.mediators.WebClient;
 import io.andrewohara.tinkertech.views.ErrorHandler;
 import io.andrewohara.tinkertech.views.ViewLoader;
 import javafx.application.Application;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -40,9 +39,7 @@ public class Main extends Application {
 		Downloader downloader = new Downloader(errorHandler, Executors.newSingleThreadExecutor(), config, webClient);
 		ViewLoader viewLoader = new ViewLoader(config, errorHandler, modLoader, factorioModsMediator, downloader);
 		
-		Parent root = viewLoader.loadModsPane();
-		
-		Scene scene = new Scene(root, 800, 600);
+		Scene scene = new Scene(viewLoader.loadMainPane(), 800, 600);
 		stage.setTitle(APP_NAME);
 		stage.setScene(scene);
 		stage.show();

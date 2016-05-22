@@ -6,22 +6,20 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-	<VBox xmlns:fx="http://javafx.com/fxml" prefWidth="400">
-		<children>
-			<TilePane>
-				<children>
-					<Label fx:id="title" underline="true"/>
-					<Text fx:id="author"/>
-					<Text fx:id="version"/>
-				</children>
-			</TilePane>
-			<HBox>
-				<children>
-					<Label text="Description:"/>
-					<Label fx:id="description"/>
-					<Button text="Update" onAction="#handleUpdate"/>
-					<Button text="Delete" onAction="#handleDelete"/>
-				</children>
-			</HBox>
-		</children>
-	</VBox>
+<VBox xmlns:fx="http://javafx.com/fxml" prefWidth="400">
+	<children>
+		<TilePane>
+			<children>
+				<Label fx:id="title" underline="true"/>
+				<Text fx:id="author"/>
+				<Text fx:id="version"/>
+			</children>
+		</TilePane>
+		<HBox>
+			<children>
+				<Label text="Description:"/>
+				<Label fx:id="description"/>
+			</children>
+		</HBox>
+	</children>
+</VBox>

@@ -39,4 +39,9 @@ public abstract class AbstractModStub implements ModStub {
 		String fileName = String.format("%s_%s.zip", getName(), getVersion());
 		return config.getModsPath().resolve(fileName);
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s v%s", getTitle(), getVersion());
+	}
 }

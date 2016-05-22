@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import io.andrewohara.tinkertech.config.Config;
@@ -28,7 +30,7 @@ public class Downloader {
 		this.webClient = webClient;
 	}
 	
-	public Download download(Listing listing) throws IOException {
+	public Download download(Listing listing) throws DownloadNotSupportedException {
 		InputStream stream = getDownloadStream(listing);
 		
 		// Get size of download
@@ -49,12 +51,34 @@ public class Downloader {
 		
 	}
 	
-	private InputStream getDownloadStream(Listing listing) throws IOException {
-		try {
-			return webClient.getZipStream(listing.getLatestRelease().getDownloadUrl());
-		} catch (IOException e) {
-			return webClient.getZipStream(listing.getLatestRelease().getMirrorUrl());
+	private InputStream getDownloadStream(Listing listing) throws DownloadNotSupportedException {
+		IOException exception = null;
+		final List<String> urls = Arrays.asList(
+				listing.getLatestRelease().getDownloadUrl(),
+				listing.getLatestRelease().getMirrorUrl());
+		for (String url : urls) {
+			if (url != null) {
+				try {
+					return webClient.getZipStream(url);
+				} catch (IOException e) {
+					exception = e;
+				}
+			}
 		}
+		
+		throw new DownloadNotSupportedException(listing, exception);
+		
+		
+		//try {
+		//	String downloadUrl = ;
+			
+			//return webClient.getZipStream(downloadUrl);
+		//} catch (IOException e) {
+		//	try {
+		//		return webClient.getZipStream(listing.getLatestRelease().getMirrorUrl());
+		//	} catch (Exception e2) {
+		//		throw new DownloadNotSupportedException(listing);
+		//	}
 	}
 	
 	private class RunnableDownload implements Runnable, Download {

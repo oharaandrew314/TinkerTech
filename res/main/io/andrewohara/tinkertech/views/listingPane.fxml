@@ -7,18 +7,24 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml">
+	<top>
+		<HBox>
+			<children>
+				<Label text="Search:"/>
+				<TextField fx:id="searchField" onAction="#handleSearch"/>
+			</children>
+		</HBox>
+
+		
+	</top>
 	<center>
 		<ScrollPane>
-			<ListView fx:id="modsList" prefWidth="400">
+			<ListView fx:id="listings">
 			</ListView>
 		</ScrollPane>
 	</center>
+
 	<bottom>
-		<HBox>
-			<children>
-				<Button text="Update" onAction="#handleUpdate" />
-				<Button text="Delete" onAction="#handleDelete" />
-			</children>
-		</HBox>
+		<Button text="Download" onAction="#handleDownload"/>
 	</bottom>
 </BorderPane>
