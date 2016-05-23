@@ -2,24 +2,27 @@ package io.andrewohara.tinkertech.models;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.json.JSONObject;
 
-import io.andrewohara.tinkertech.config.Config;
 import io.andrewohara.tinkertech.version.Version;
 
 public class Mod extends AbstractModStub {
-	
-	public Mod(JSONObject root) {
+
+	private final Path path;
+
+	public Mod(JSONObject root, Path path) {
 		super(root);
+		this.path = path;
 	}
-	
+
 	@Override
 	public Version getVersion() {
 		return Version.valueOf(root.getString("version"));
 	}
-	
-	public void delete(Config config) throws IOException {
-		Files.delete(getDownloadPath(config));
+
+	public void delete() throws IOException {
+		Files.delete(path);
 	}
 }

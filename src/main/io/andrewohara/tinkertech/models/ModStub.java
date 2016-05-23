@@ -1,8 +1,5 @@
 package io.andrewohara.tinkertech.models;
 
-import java.nio.file.Path;
-
-import io.andrewohara.tinkertech.config.Config;
 import io.andrewohara.tinkertech.version.Version;
 
 public interface ModStub {
@@ -11,5 +8,4 @@ public interface ModStub {
 	String getAuthor();
 	Version getVersion();
 	String getDescription();
-	Path getDownloadPath(Config config);
 }

@@ -6,5 +6,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<HBox fx:id="mainPane" xmlns:fx="http://javafx.com/fxml">
-</HBox>
+<VBox xmlns:fx="http://javafx.com/fxml">
+	<MenuBar>
+		<Menu text="File">
+			<MenuItem text="Settings"/>
+			<MenuItem text="Exit" onAction="#handleExit"/>
+		</Menu>
+		<Menu text="Help">
+			<MenuItem text="About"/>
+			<MenuItem text="Contact"/>
+			<MenuItem text="Help"/>
+		</Menu>
+	</MenuBar>
+
+	<HBox fx:id="mainPane">
+	</HBox>
+</VBox>

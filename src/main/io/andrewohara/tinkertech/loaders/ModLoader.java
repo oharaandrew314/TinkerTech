@@ -12,6 +12,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
+import com.google.inject.Inject;
+
 import io.andrewohara.tinkertech.config.Config;
 import io.andrewohara.tinkertech.models.Mod;
 import io.andrewohara.tinkertech.views.ErrorHandler;
@@ -21,7 +23,8 @@ public class ModLoader {
 	private final ErrorHandler errorHandler;
 	private final Config config;
 
-	public ModLoader(ErrorHandler errorHandler, Config config) {
+	@Inject
+	protected ModLoader(ErrorHandler errorHandler, Config config) {
 		this.errorHandler = errorHandler;
 		this.config = config;
 	}
@@ -39,14 +42,14 @@ public class ModLoader {
 			return Stream.empty();
 		}
 	}
-	
+
 	private Mod loadMod(Path modZipPath) {
 		String infoPath = String.format("%s/info.json", FilenameUtils.getBaseName(modZipPath.toString()));
-		
+
 		try (ZipFile zipFile = new ZipFile(modZipPath.toFile())) {
 			ZipEntry entry = zipFile.getEntry(infoPath);
 			String json = IOUtils.toString(zipFile.getInputStream(entry));
-			return new Mod(new JSONObject(json));
+			return new Mod(new JSONObject(json), modZipPath);
 		} catch (IOException e) {
 			errorHandler.handleError(new IOException(modZipPath.getFileName().toString(), e));
 			return null;
