@@ -1,8 +1,5 @@
 package io.andrewohara.tinkertech;
 
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.WatchService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -15,6 +12,8 @@ import io.andrewohara.tinkertech.mediators.FactorioModsMediator;
 import io.andrewohara.tinkertech.mediators.Mediator;
 import io.andrewohara.tinkertech.mediators.UnirestWebClient;
 import io.andrewohara.tinkertech.mediators.WebClient;
+import io.andrewohara.tinkertech.services.DirectoryWatchService;
+import io.andrewohara.tinkertech.services.DirectoryWatchServiceImpl;
 import io.andrewohara.tinkertech.views.DialogErrorHandler;
 import io.andrewohara.tinkertech.views.ErrorHandler;
 import javafx.application.Application;
@@ -28,21 +27,11 @@ public class MainModule extends AbstractModule {
 		bind(WebClient.class).to(UnirestWebClient.class);
 		bind(Mediator.class).to(FactorioModsMediator.class);
 		bind(ErrorHandler.class).to(DialogErrorHandler.class);
+		bind(DirectoryWatchService.class).to(DirectoryWatchServiceImpl.class);
 	}
 
 	@Provides
 	public Executor provideDownloadExecutor() {
 		return Executors.newFixedThreadPool(4);
 	}
-
-	@Provides
-	public WatchService provideDirectoryWatcher(ErrorHandler errorHandler) {
-		try {
-			return FileSystems.getDefault().newWatchService();
-		} catch (IOException e) {
-			errorHandler.handleError(e);
-			throw new RuntimeException(e);
-		}
-	}
-
 }
