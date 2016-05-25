@@ -1,14 +1,12 @@
 package io.andrewohara.tinkertech.views;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.function.Function;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
-import io.andrewohara.tinkertech.models.ModStub;
 import javafx.fxml.FXMLLoader;
 
 public class GuiModule extends AbstractModule {
@@ -19,35 +17,10 @@ public class GuiModule extends AbstractModule {
 
 	@Provides
 	@Named("mainPane")
-	public FXMLLoader provideMainPane(MainPaneController mainPaneController) {
+	public FXMLLoader provideMainPane(Injector injector) {
 		FXMLLoader loader = load("mainPane");
-		loader.setController(mainPaneController);
+		loader.setControllerFactory(injector::getInstance);
 		return loader;
-	}
-
-	@Provides
-	@Named("modsPane")
-	public FXMLLoader provideModsPane(ModsPaneController modsPaneController) throws IOException {
-		FXMLLoader loader = load("modsPane");
-		loader.setController(modsPaneController);
-		return loader;
-	}
-
-	@Provides
-	@Named("listingPane")
-	public FXMLLoader provideListingPane(ListingPaneController listingPaneController) throws IOException {
-		FXMLLoader loader = load("listingPane");
-		loader.setController(listingPaneController);
-		return loader;
-	}
-
-	@Provides
-	public Function<ModStub, FXMLLoader> modStubViewSupplier() {
-		return modStub -> {
-			FXMLLoader loader = load("modStub");
-			loader.setController(new ModStubController(modStub));
-			return loader;
-		};
 	}
 
 	private FXMLLoader load(String fileName) {

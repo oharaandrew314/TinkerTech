@@ -5,9 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.inject.Inject;
 
@@ -18,55 +16,40 @@ import io.andrewohara.tinkertech.loaders.ModLoader;
 import io.andrewohara.tinkertech.mediators.Mediator;
 import io.andrewohara.tinkertech.models.Listing;
 import io.andrewohara.tinkertech.models.Mod;
-import io.andrewohara.tinkertech.models.ModStub;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.ListView;
 
 public class ModsPaneController extends Controller {
 
 	private final Config config;
-	private final Function<ModStub, FXMLLoader> modViewLoader;
 	private final ModLoader modLoader;
 	private final ErrorHandler errorHandler;
 	private final Mediator mediator;
 	private final Downloader downloader;
+	private final ModStubCellFactory<Mod> modStubCellFactory;
 
 	private final WatchService directoryWatcher;
-	private final Map<Node, Mod> backrefs = new HashMap<>();
 
-	@FXML ListView<Node> modsList;
+	@FXML ListView<Mod> modsList;
 
 	@Inject
-	protected ModsPaneController(Config config, Function<ModStub, FXMLLoader> modViewLoader, ModLoader modLoader, ErrorHandler errorHandler, Mediator mediator, Downloader downloader, WatchService directoryWatcher) {
+	protected ModsPaneController(
+			Config config, ModLoader modLoader, ErrorHandler errorHandler, Mediator mediator, Downloader downloader,
+			WatchService directoryWatcher, ModStubCellFactory<Mod> modStubCellFactory) {
 		this.config = config;
-		this.modViewLoader = modViewLoader;
 		this.modLoader = modLoader;
 		this.errorHandler = errorHandler;
 		this.mediator = mediator;
 		this.downloader = downloader;
 		this.directoryWatcher = directoryWatcher;
+		this.modStubCellFactory = modStubCellFactory;
 	}
 
 	private void refresh() {
-		backrefs.clear();
-		modsList.getItems().clear();
 		try {
-			modLoader
-			.listMods()
-			.map(mod -> {
-				try {
-					Node node = modViewLoader.apply(mod).load();
-					backrefs.put(node, mod);
-					return node;
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			})
-			.forEach(node -> {modsList.getItems().add(node); });
+			modsList.getItems().setAll(modLoader.listMods().collect(Collectors.toList()));
 		} catch (IOException e) {
 			errorHandler.handleError(e);
 		}
@@ -74,6 +57,8 @@ public class ModsPaneController extends Controller {
 
 	@Override
 	protected void init() {
+		modsList.setCellFactory(modStubCellFactory);
+
 		try {
 			Path modsPath = config.getModsPath();
 			modsPath.register(
@@ -125,7 +110,6 @@ public class ModsPaneController extends Controller {
 	}
 
 	private Mod getSelected() {
-		Node selectedNode = modsList.getSelectionModel().getSelectedItem();
-		return backrefs.get(selectedNode);
+		return modsList.getSelectionModel().getSelectedItem();
 	}
 }

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" prefWidth="400">
+<VBox fx:controller="io.andrewohara.tinkertech.views.ModStubController" xmlns:fx="http://javafx.com/fxml" prefWidth="400">
 	<children>
 		<TilePane>
 			<children>

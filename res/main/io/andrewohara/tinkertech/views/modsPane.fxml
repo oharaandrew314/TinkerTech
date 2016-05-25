@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="io.andrewohara.tinkertech.views.ModsPaneController">
 	<center>
 		<ScrollPane>
 			<ListView fx:id="modsList" prefWidth="400">

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml">
+<BorderPane fx:controller="io.andrewohara.tinkertech.views.ListingPaneController" xmlns:fx="http://javafx.com/fxml">
 	<top>
 		<HBox>
 			<children>

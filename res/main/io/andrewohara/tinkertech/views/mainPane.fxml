@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml">
+<VBox fx:controller="io.andrewohara.tinkertech.views.MainPaneController" xmlns:fx="http://javafx.com/fxml">
 	<MenuBar>
 		<Menu text="File">
 			<MenuItem text="Settings"/>
@@ -20,5 +20,7 @@
 	</MenuBar>
 
 	<HBox fx:id="mainPane">
+		<fx:include source="listingPane.fxml"/>
+		<fx:include source="modsPane.fxml"/>
 	</HBox>
 </VBox>

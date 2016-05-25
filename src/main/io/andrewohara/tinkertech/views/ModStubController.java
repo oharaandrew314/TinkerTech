@@ -5,19 +5,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 
-public class ModStubController extends Controller {
-
-	private final ModStub modStub;
+public class ModStubController {
 
 	@FXML Label title, description;
 	@FXML Text author, version;
 
-	public ModStubController(ModStub modStub) {
-		this.modStub = modStub;
-	}
-
-	@Override
-	protected void init() {
+	public void setModStub(ModStub modStub) {
 		title.setText(modStub.getTitle());
 		author.setText(modStub.getAuthor());
 		version.setText("v" + modStub.getVersion());
