@@ -13,9 +13,9 @@
 			<MenuItem text="Exit" onAction="#handleExit"/>
 		</Menu>
 		<Menu text="Help">
-			<MenuItem text="About"/>
-			<MenuItem text="Contact"/>
-			<MenuItem text="Help"/>
+			<MenuItem text="About" onAction="#handleAbout" />
+			<MenuItem text="Contact" onAction="#handleContact" />
+			<MenuItem text="Help" onAction="#handleHelp" />
 		</Menu>
 	</MenuBar>
 
