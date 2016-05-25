@@ -2,8 +2,6 @@ package io.andrewohara.tinkertech.models;
 
 import org.json.JSONObject;
 
-import io.andrewohara.tinkertech.version.Version;
-
 public class Release {
 
 	private final Listing listing;

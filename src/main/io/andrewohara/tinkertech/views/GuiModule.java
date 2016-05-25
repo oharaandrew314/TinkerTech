@@ -1,7 +1,5 @@
 package io.andrewohara.tinkertech.views;
 
-import java.net.URL;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
@@ -18,14 +16,8 @@ public class GuiModule extends AbstractModule {
 	@Provides
 	@Named("mainPane")
 	public FXMLLoader provideMainPane(Injector injector) {
-		FXMLLoader loader = load("mainPane");
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("mainPane.fxml"));
 		loader.setControllerFactory(injector::getInstance);
 		return loader;
-	}
-
-	private FXMLLoader load(String fileName) {
-		String filePath = getClass().getPackage().getName().replace('.', '/') + '/' + fileName + ".fxml";
-		URL url = getClass().getClassLoader().getResource(filePath);
-		return new FXMLLoader(url);
 	}
 }

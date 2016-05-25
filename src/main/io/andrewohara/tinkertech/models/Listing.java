@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import io.andrewohara.tinkertech.version.Version;
-
 public class Listing extends AbstractModStub {
 
 	public Listing(JSONObject root) {

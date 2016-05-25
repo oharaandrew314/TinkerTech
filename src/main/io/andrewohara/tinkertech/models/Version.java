@@ -1,4 +1,4 @@
-package io.andrewohara.tinkertech.version;
+package io.andrewohara.tinkertech.models;
 
 public class Version {
 	private String m_versionString;

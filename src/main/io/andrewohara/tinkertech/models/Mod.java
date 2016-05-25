@@ -6,8 +6,6 @@ import java.nio.file.Path;
 
 import org.json.JSONObject;
 
-import io.andrewohara.tinkertech.version.Version;
-
 public class Mod extends AbstractModStub {
 
 	private final Path path;

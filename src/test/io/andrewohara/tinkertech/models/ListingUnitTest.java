@@ -6,8 +6,6 @@ import static org.hamcrest.CoreMatchers.*;
 
 import org.junit.Test;
 
-import io.andrewohara.tinkertech.version.Version;
-
 public class ListingUnitTest {
 
 	@Test

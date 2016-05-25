@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import io.andrewohara.tinkertech.version.Version;
-
 import static org.hamcrest.CoreMatchers.*;
 
 public class ModUnitTest {
