@@ -48,10 +48,16 @@ public class ModLoader {
 
 		try (ZipFile zipFile = new ZipFile(modZipPath.toFile())) {
 			ZipEntry entry = zipFile.getEntry(infoPath);
+			if (entry == null) {
+				String message = modZipPath.getFileName().toString() + " is not compliant with Factorio Modding standards";
+				errorHandler.handleError(new IOException(message));
+				return null;
+			}
 			String json = IOUtils.toString(zipFile.getInputStream(entry));
 			return new Mod(new JSONObject(json), modZipPath);
 		} catch (IOException e) {
-			errorHandler.handleError(new IOException(modZipPath.getFileName().toString(), e));
+			String message = "There was an error scanning the mod: " + modZipPath.getFileName().toString();
+			errorHandler.handleError(new IOException(message, e));
 			return null;
 		}
 	}

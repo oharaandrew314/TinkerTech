@@ -10,30 +10,34 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+import io.andrewohara.tinkertech.ShutdownTask;
+import io.andrewohara.tinkertech.StartupTask;
 import io.andrewohara.tinkertech.config.Config;
-import io.andrewohara.tinkertech.views.ErrorHandler;
 
-public class DirectoryWatchServiceImpl extends Thread implements DirectoryWatchService {
+@Singleton
+public class DirectoryWatchServiceImpl extends Thread implements DirectoryWatchService, StartupTask, ShutdownTask {
 
-	private final WatchService watchService;
+	private final Config config;
+
+	private WatchService watchService;
 	private final List<Runnable> listeners = new LinkedList<>();
 
 	@Inject
-	protected DirectoryWatchServiceImpl(ErrorHandler errorHandler, Config config) {
-		try {
-			watchService = FileSystems.getDefault().newWatchService();
+	protected DirectoryWatchServiceImpl(Config config) {
+		this.config = config;
+	}
 
-			config.getModsPath().register(
-					watchService,
-					StandardWatchEventKinds.ENTRY_CREATE,
-					StandardWatchEventKinds.ENTRY_MODIFY,
-					StandardWatchEventKinds.ENTRY_DELETE
-					);
-		} catch (IOException e) {
-			errorHandler.handleError(e);
-			throw new RuntimeException(e);
-		}
+	@Override
+	public synchronized void startup() throws IOException {
+		watchService = FileSystems.getDefault().newWatchService();
+		config.getModsPath().register(
+				watchService,
+				StandardWatchEventKinds.ENTRY_CREATE,
+				StandardWatchEventKinds.ENTRY_MODIFY,
+				StandardWatchEventKinds.ENTRY_DELETE
+				);
 		start();
 	}
 
@@ -61,7 +65,9 @@ public class DirectoryWatchServiceImpl extends Thread implements DirectoryWatchS
 	}
 
 	@Override
-	public void cancel() throws IOException {
-		watchService.close();
+	public void shutdown() throws IOException {
+		if (watchService != null) {
+			watchService.close();
+		}
 	}
 }

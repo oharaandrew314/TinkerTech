@@ -3,23 +3,24 @@ package io.andrewohara.tinkertech;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Set;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.name.Names;
+import com.cathive.fx.guice.GuiceApplication;
+import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.inject.Inject;
+import com.google.inject.Module;
 
 import io.andrewohara.tinkertech.models.Version;
-import io.andrewohara.tinkertech.services.DirectoryWatchService;
-import io.andrewohara.tinkertech.views.GuiModule;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import io.andrewohara.tinkertech.views.ErrorHandler;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Main extends GuiceApplication {
 
 	public static final String
+	APP_SLUG = "TinkerTech",
 	APP_NAME = "Tinker Tech - Factorio Mod Manager",
 	AUTHOR = "Andrew O'Hara";
 
@@ -35,18 +36,29 @@ public class Main extends Application {
 		}
 	}
 
-	private final FXMLLoader mainPaneLoader;
-	private final DirectoryWatchService directoryWatchService;
+	@Inject ErrorHandler errorHandler;
+	@Inject private GuiceFXMLLoader fxmlLoader;
+	@Inject Set<StartupTask> startupTasks;
+	@Inject Set<ShutdownTask> shutdownTasks;
 
-	public Main() {
-		Injector injector = Guice.createInjector(new GuiModule(), new MainModule());
-		mainPaneLoader = injector.getInstance(Key.get(FXMLLoader.class, Names.named("mainPane")));
-		directoryWatchService = injector.getInstance(DirectoryWatchService.class);
+	@Override
+	public void init(List<Module> modules) throws Exception {
+		modules.add(new MainModule());
+		modules.add(OSModule.create());
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		Scene scene = new Scene(mainPaneLoader.load(), 800, 600);
+		startupTasks.forEach(task -> {
+			try {
+				task.startup();
+			} catch (Exception e) {
+				errorHandler.handleError(e);
+			}
+		});
+
+		Parent parent = fxmlLoader.load(getClass().getResource("views/mainPane.fxml")).getRoot();
+		Scene scene = new Scene(parent, 800, 600);
 		stage.setTitle(APP_NAME);
 		stage.setScene(scene);
 		stage.show();
@@ -54,7 +66,14 @@ public class Main extends Application {
 
 	@Override
 	public void stop() throws Exception {
-		directoryWatchService.cancel();
+		shutdownTasks.forEach(task -> {
+			try {
+				task.shutdown();
+			} catch (Exception e) {
+				errorHandler.handleError(e);
+			}
+		});
+
 		super.stop();
 		System.exit(0);
 	}

@@ -38,6 +38,8 @@ dependencies {
 	compile 'commons-io:commons-io:2.4'
 	compile 'org.apache.commons:commons-lang3:3.4'
 	compile 'com.mashape.unirest:unirest-java:1.4.9'
+	compile 'com.google.inject.extensions:guice-multibindings:4.0'
+	compile 'com.cathive.fx:fx-guice:8.0.0'
 
 	testCompile 'org.easymock:easymock:3.3.1'
 	testCompile 'junit:junit:4.12'
