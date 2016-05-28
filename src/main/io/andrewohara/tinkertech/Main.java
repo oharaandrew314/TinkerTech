@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Set;
 
 import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.common.util.concurrent.ServiceManager;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 
+import io.andrewohara.tinkertech.config.ConfigLoader;
 import io.andrewohara.tinkertech.models.Version;
 import io.andrewohara.tinkertech.views.ErrorHandler;
 import javafx.scene.Parent;
@@ -38,8 +39,8 @@ public class Main extends GuiceApplication {
 
 	@Inject ErrorHandler errorHandler;
 	@Inject private GuiceFXMLLoader fxmlLoader;
-	@Inject Set<StartupTask> startupTasks;
-	@Inject Set<ShutdownTask> shutdownTasks;
+	@Inject ServiceManager serviceManager;
+	@Inject ConfigLoader configLoader;
 
 	@Override
 	public void init(List<Module> modules) throws Exception {
@@ -49,14 +50,11 @@ public class Main extends GuiceApplication {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		startupTasks.forEach(task -> {
-			try {
-				task.startup();
-			} catch (Exception e) {
-				errorHandler.handleError(e);
-			}
-		});
+		// Start Services
+		configLoader.load();
+		serviceManager.startAsync();
 
+		// Start GUI
 		Parent parent = fxmlLoader.load(getClass().getResource("views/mainPane.fxml")).getRoot();
 		Scene scene = new Scene(parent, 800, 600);
 		stage.setTitle(APP_NAME);
@@ -66,15 +64,8 @@ public class Main extends GuiceApplication {
 
 	@Override
 	public void stop() throws Exception {
-		shutdownTasks.forEach(task -> {
-			try {
-				task.shutdown();
-			} catch (Exception e) {
-				errorHandler.handleError(e);
-			}
-		});
-
 		super.stop();
+		serviceManager.stopAsync().awaitStopped();
 		System.exit(0);
 	}
 

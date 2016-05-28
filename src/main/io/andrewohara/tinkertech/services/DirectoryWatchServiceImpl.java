@@ -9,15 +9,14 @@ import java.nio.file.WatchService;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.andrewohara.tinkertech.ShutdownTask;
-import io.andrewohara.tinkertech.StartupTask;
 import io.andrewohara.tinkertech.config.Config;
 
 @Singleton
-public class DirectoryWatchServiceImpl extends Thread implements DirectoryWatchService, StartupTask, ShutdownTask {
+public class DirectoryWatchServiceImpl extends AbstractExecutionThreadService implements DirectoryWatchService {
 
 	private final Config config;
 
@@ -30,7 +29,7 @@ public class DirectoryWatchServiceImpl extends Thread implements DirectoryWatchS
 	}
 
 	@Override
-	public synchronized void startup() throws IOException {
+	protected void startUp() throws IOException {
 		watchService = FileSystems.getDefault().newWatchService();
 		config.getModsPath().register(
 				watchService,
@@ -38,7 +37,6 @@ public class DirectoryWatchServiceImpl extends Thread implements DirectoryWatchS
 				StandardWatchEventKinds.ENTRY_MODIFY,
 				StandardWatchEventKinds.ENTRY_DELETE
 				);
-		start();
 	}
 
 	@Override
@@ -65,7 +63,7 @@ public class DirectoryWatchServiceImpl extends Thread implements DirectoryWatchS
 	}
 
 	@Override
-	public void shutdown() throws IOException {
+	public void shutDown() throws IOException {
 		if (watchService != null) {
 			watchService.close();
 		}

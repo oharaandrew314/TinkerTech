@@ -1,10 +1,14 @@
 package io.andrewohara.tinkertech;
 
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import com.google.common.util.concurrent.Service;
+import com.google.common.util.concurrent.ServiceManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 
 import io.andrewohara.tinkertech.config.Config;
@@ -33,14 +37,15 @@ public class MainModule extends AbstractModule {
 		bind(Config.class).to(PropertiesConfig.class);
 		bind(ConfigLoader.class).to(PropertiesConfigLoader.class);
 
-		// Startup Tasks
-		Multibinder<StartupTask> startupTasks = Multibinder.newSetBinder(binder(), StartupTask.class);
-		startupTasks.addBinding().to(PropertiesConfigLoader.class);
-		startupTasks.addBinding().to(DirectoryWatchServiceImpl.class);
+		// Services
+		Multibinder<Service> services = Multibinder.newSetBinder(binder(), Service.class);
+		services.addBinding().to(DirectoryWatchService.class);
+	}
 
-		// Shutdown Tasks
-		Multibinder<ShutdownTask> shutdownTasks = Multibinder.newSetBinder(binder(), ShutdownTask.class);
-		shutdownTasks.addBinding().to(DirectoryWatchServiceImpl.class);
+	@Singleton
+	@Provides
+	public ServiceManager provideServiceManager(Set<Service> services) {
+		return new ServiceManager(services);
 	}
 
 	@Provides

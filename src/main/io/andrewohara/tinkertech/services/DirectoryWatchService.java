@@ -1,5 +1,7 @@
 package io.andrewohara.tinkertech.services;
 
-public interface DirectoryWatchService {
+import com.google.common.util.concurrent.Service;
+
+public interface DirectoryWatchService extends Service {
 	void addListener(Runnable listener);
 }

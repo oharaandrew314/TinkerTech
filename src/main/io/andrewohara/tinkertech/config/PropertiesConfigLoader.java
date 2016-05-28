@@ -2,6 +2,8 @@ package io.andrewohara.tinkertech.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
@@ -9,13 +11,12 @@ import java.util.Properties;
 import com.google.inject.Inject;
 
 import io.andrewohara.tinkertech.Main;
-import io.andrewohara.tinkertech.StartupTask;
 import io.andrewohara.tinkertech.os.OSContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.DirectoryChooser;
 
-public class PropertiesConfigLoader implements ConfigLoader, StartupTask {
+public class PropertiesConfigLoader implements ConfigLoader {
 
 	private final OSContext osContext;
 	private final PropertiesConfig config;
@@ -29,7 +30,9 @@ public class PropertiesConfigLoader implements ConfigLoader, StartupTask {
 	@Override
 	public void load() throws IOException {
 		Properties properties = config.getProperties();
-		properties.load(Files.newInputStream(getConfigPath()));
+		try (InputStream is = Files.newInputStream(getConfigPath())) {
+			properties.load(is);
+		}
 
 		if (!properties.containsKey(PropertiesConfig.GAME_DATA_KEY)) {
 			if (osContext.getDataPath().isPresent()) {
@@ -44,12 +47,9 @@ public class PropertiesConfigLoader implements ConfigLoader, StartupTask {
 
 	@Override
 	public void save() throws IOException {
-		config.getProperties().store(Files.newOutputStream(getConfigPath()), null);
-	}
-
-	@Override
-	public void startup() throws Exception {
-		load();
+		try (OutputStream os = Files.newOutputStream(getConfigPath())) {
+			config.getProperties().store(os, null);
+		}
 	}
 
 	private Path getConfigPath() {
