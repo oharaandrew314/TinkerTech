@@ -20,11 +20,13 @@ public class MainPaneController {
 
 	private final Application application;
 	private final ErrorHandler errorHandler;
+	private final ConfigController configController;
 
 	@Inject
-	protected MainPaneController(Application application, ErrorHandler errorHandler) {
+	protected MainPaneController(Application application, ErrorHandler errorHandler, ConfigController configController) {
 		this.application = application;
 		this.errorHandler = errorHandler;
+		this.configController = configController;
 	}
 
 	@FXML protected void handleExit(ActionEvent event) {
@@ -33,6 +35,10 @@ public class MainPaneController {
 		} catch (Exception e) {
 			errorHandler.handleError(e);
 		}
+	}
+
+	@FXML protected void handleSettings(ActionEvent event) {
+		configController.show();
 	}
 
 	@FXML protected void handleAbout(ActionEvent event) {

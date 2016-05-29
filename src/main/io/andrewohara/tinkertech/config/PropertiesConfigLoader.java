@@ -1,47 +1,40 @@
 package io.andrewohara.tinkertech.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Properties;
+import java.util.function.Consumer;
 
 import com.google.inject.Inject;
 
-import io.andrewohara.tinkertech.Main;
 import io.andrewohara.tinkertech.os.OSContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.stage.DirectoryChooser;
+import io.andrewohara.tinkertech.views.ConfigController;
 
 public class PropertiesConfigLoader implements ConfigLoader {
 
 	private final OSContext osContext;
 	private final PropertiesConfig config;
+	private final ConfigController configController;
 
 	@Inject
-	protected PropertiesConfigLoader(PropertiesConfig config, OSContext osContext) {
+	protected PropertiesConfigLoader(PropertiesConfig config, OSContext osContext, ConfigController configController) {
 		this.config = config;
 		this.osContext = osContext;
+		this.configController = configController;
 	}
 
 	@Override
 	public void load() throws IOException {
-		Properties properties = config.getProperties();
 		try (InputStream is = Files.newInputStream(getConfigPath())) {
-			properties.load(is);
+			config.getProperties().load(is);
 		}
 
-		if (!properties.containsKey(PropertiesConfig.GAME_DATA_KEY)) {
-			if (osContext.getDataPath().isPresent()) {
-				properties.setProperty(PropertiesConfig.GAME_DATA_KEY, osContext.getDataPath().get().toString());
-			} else {
-				Path dataPath = askForDataPath();
-				properties.setProperty(PropertiesConfig.GAME_DATA_KEY, dataPath.toString());
+		while (!config.isValid()) {
+			if (configController.show()) {
+				break;
 			}
-			save();
 		}
 	}
 
@@ -56,23 +49,9 @@ public class PropertiesConfigLoader implements ConfigLoader {
 		return osContext.getStoragePath().resolve("config.properties");
 	}
 
-	private Path askForDataPath() throws IOException {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Welcome to " + Main.APP_NAME);
-		alert.setHeaderText("Setup required");
-		alert.setContentText("The Factorio AppData folder was not detected.  Please locate it.\nIt should contain a 'mods' folder inside it.");
-		alert.showAndWait();
-
-		DirectoryChooser chooser = new DirectoryChooser();
-		chooser.setTitle("Please locate the Factorio Data directory");
-		File dataFile = chooser.showDialog(null);
-		if (dataFile == null) {
-			return null;
-		}
-		Path dataDir = dataFile.toPath();
-		if (Files.exists(dataDir)) {
-			return dataDir;
-		}
-		throw new IOException("Factorio Data directory was not found");
+	@Override
+	public void updateConfig(Consumer<EditableConfig> configActions) throws IOException {
+		configActions.accept(config);
+		save();
 	}
 }

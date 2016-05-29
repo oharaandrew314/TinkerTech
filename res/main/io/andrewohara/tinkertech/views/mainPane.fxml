@@ -9,7 +9,7 @@
 <VBox fx:controller="io.andrewohara.tinkertech.views.MainPaneController" xmlns:fx="http://javafx.com/fxml">
 	<MenuBar>
 		<Menu text="File">
-			<MenuItem text="Settings"/>
+			<MenuItem text="Settings" onAction="#handleSettings" />
 			<MenuItem text="Exit" onAction="#handleExit"/>
 		</Menu>
 		<Menu text="Help">

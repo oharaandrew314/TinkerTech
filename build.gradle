@@ -40,6 +40,7 @@ dependencies {
 	compile 'com.mashape.unirest:unirest-java:1.4.9'
 	compile 'com.google.inject.extensions:guice-multibindings:4.0'
 	compile 'com.cathive.fx:fx-guice:8.0.0'
+	compile 'org.controlsfx:controlsfx:8.40.10'
 
 	testCompile 'org.easymock:easymock:3.3.1'
 	testCompile 'junit:junit:4.12'

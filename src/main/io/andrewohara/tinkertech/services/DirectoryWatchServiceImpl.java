@@ -14,18 +14,21 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.andrewohara.tinkertech.config.Config;
+import io.andrewohara.tinkertech.views.ErrorHandler;
 
 @Singleton
 public class DirectoryWatchServiceImpl extends AbstractExecutionThreadService implements DirectoryWatchService {
 
 	private final Config config;
+	private final ErrorHandler errorHandler;
 
 	private WatchService watchService;
 	private final List<Runnable> listeners = new LinkedList<>();
 
 	@Inject
-	protected DirectoryWatchServiceImpl(Config config) {
+	protected DirectoryWatchServiceImpl(Config config, ErrorHandler errorHandler) {
 		this.config = config;
+		this.errorHandler = errorHandler;
 	}
 
 	@Override
@@ -63,9 +66,13 @@ public class DirectoryWatchServiceImpl extends AbstractExecutionThreadService im
 	}
 
 	@Override
-	public void shutDown() throws IOException {
+	protected void triggerShutdown() {
 		if (watchService != null) {
-			watchService.close();
+			try {
+				watchService.close();
+			} catch (IOException e) {
+				errorHandler.handleError(e);
+			}
 		}
 	}
 }

@@ -13,6 +13,7 @@ import com.google.inject.multibindings.Multibinder;
 
 import io.andrewohara.tinkertech.config.Config;
 import io.andrewohara.tinkertech.config.ConfigLoader;
+import io.andrewohara.tinkertech.config.EditableConfig;
 import io.andrewohara.tinkertech.config.PropertiesConfig;
 import io.andrewohara.tinkertech.config.PropertiesConfigLoader;
 import io.andrewohara.tinkertech.mediators.FactorioModsMediator;
@@ -21,6 +22,8 @@ import io.andrewohara.tinkertech.mediators.UnirestWebClient;
 import io.andrewohara.tinkertech.mediators.WebClient;
 import io.andrewohara.tinkertech.services.DirectoryWatchService;
 import io.andrewohara.tinkertech.services.DirectoryWatchServiceImpl;
+import io.andrewohara.tinkertech.views.ConfigController;
+import io.andrewohara.tinkertech.views.ConfigControllerImpl;
 import io.andrewohara.tinkertech.views.DialogErrorHandler;
 import io.andrewohara.tinkertech.views.ErrorHandler;
 import javafx.application.Application;
@@ -35,7 +38,9 @@ public class MainModule extends AbstractModule {
 		bind(ErrorHandler.class).to(DialogErrorHandler.class);
 		bind(DirectoryWatchService.class).to(DirectoryWatchServiceImpl.class);
 		bind(Config.class).to(PropertiesConfig.class);
+		bind(EditableConfig.class).to(PropertiesConfig.class);
 		bind(ConfigLoader.class).to(PropertiesConfigLoader.class);
+		bind(ConfigController.class).to(ConfigControllerImpl.class);
 
 		// Services
 		Multibinder<Service> services = Multibinder.newSetBinder(binder(), Service.class);

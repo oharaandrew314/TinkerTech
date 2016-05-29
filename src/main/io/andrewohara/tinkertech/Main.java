@@ -64,8 +64,8 @@ public class Main extends GuiceApplication {
 
 	@Override
 	public void stop() throws Exception {
-		super.stop();
 		serviceManager.stopAsync().awaitStopped();
+		super.stop();
 		System.exit(0);
 	}
 
