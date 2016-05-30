@@ -47,6 +47,7 @@ public class ConfigImpl implements EditableConfig {
 
 	@Override
 	public boolean isValid() {
-		return Files.exists(gameDataPath.get());
+		Path dataPath = gameDataPath.get();
+		return dataPath != null && Files.exists(dataPath);
 	}
 }

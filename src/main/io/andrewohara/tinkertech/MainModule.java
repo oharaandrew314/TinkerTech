@@ -72,4 +72,10 @@ public class MainModule extends AbstractModule {
 	public ObservableValue<Path> provideDownloadsPath(Config config) {
 		return config.downloadsPath();
 	}
+
+	@Named("dataPath")
+	@Provides
+	public ObservableValue<Path> provideDataPath(Config config) {
+		return config.gameDataPath();
+	}
 }

@@ -20,13 +20,13 @@ public class ConfigControllerImpl implements ConfigController {
 
 	private final ConfigLoader configLoader;
 	private final ErrorHandler errorHandler;
-	private final ObservableValue<Path> modsPath;
+	private final ObservableValue<Path> dataPath;
 
 	@Inject
-	protected ConfigControllerImpl(ConfigLoader configLoader, ErrorHandler errorHandler, @Named("modsPath") ObservableValue<Path> modsPath) {
+	protected ConfigControllerImpl(ConfigLoader configLoader, ErrorHandler errorHandler, @Named("dataPath") ObservableValue<Path> dataPath) {
 		this.configLoader = configLoader;
 		this.errorHandler = errorHandler;
-		this.modsPath = modsPath;
+		this.dataPath = dataPath;
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class ConfigControllerImpl implements ConfigController {
 		propertySheet.setSearchBoxVisible(false);
 		propertySheet.setModeSwitcherVisible(false);
 
-		CustomPropertyItem<Path> gameDataItem = new CustomPropertyItem<>("Paths#Game Data Path", "Path to the Factorio user data.", modsPath.getValue().getParent());
+		CustomPropertyItem<Path> gameDataItem = new CustomPropertyItem<>("Paths#Game Data Path", "Path to the Factorio user data.", dataPath.getValue(), Path.class);
 		gameDataItem.setRequired(true);
 		gameDataItem.setPropertyEditorClass(PathPropertyEditor.class);
 		propertySheet.getItems().add(gameDataItem);

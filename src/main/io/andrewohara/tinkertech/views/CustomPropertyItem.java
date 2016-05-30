@@ -14,20 +14,22 @@ public class CustomPropertyItem<T> implements PropertySheet.Item {
 	private final String category, name, description;
 	private final ObjectProperty<T> property;
 	private Class<? extends PropertyEditor<T>> propertyEditor;
+	private Class<T> type;
 
 	private boolean required = false;
 
-	public CustomPropertyItem(String key, String description, T value) {
+	public CustomPropertyItem(String key, String description, T value, Class<T> type) {
 		String[] keyParts = key.split("#");
 		category = keyParts[0];
 		name = keyParts[1];
 		this.description = description;
 		property = new SimpleObjectProperty<T>(value);
+		this.type = type;
 	}
 
 	@Override
 	public Class<?> getType() {
-		return getValue().getClass();
+		return type;
 	}
 
 	@Override

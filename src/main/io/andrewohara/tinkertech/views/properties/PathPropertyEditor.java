@@ -57,7 +57,7 @@ public class PathPropertyEditor implements PropertyEditor<Path> {
 	@Override
 	public void setValue(Path value) {
 		this.path = value;
-		if (Files.exists(value)) {
+		if (value != null && Files.exists(value)) {
 			chooser.setInitialDirectory(value.toFile());
 			pathPreview.setText(value.toString());
 		}

@@ -11,6 +11,7 @@ import io.andrewohara.tinkertech.loaders.ModLoader;
 import io.andrewohara.tinkertech.mediators.Mediator;
 import io.andrewohara.tinkertech.models.Listing;
 import io.andrewohara.tinkertech.models.Mod;
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener.Change;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -43,8 +44,10 @@ public class ModsPaneController extends Controller {
 
 		// Listen for modLoader changes
 		modLoader.mods().addListener((Change<? extends Mod> change) -> {
-			modsList.getItems().clear();
-			modsList.getItems().addAll(change.getList());
+			Platform.runLater(() -> {
+				modsList.getItems().clear();
+				modsList.getItems().addAll(change.getList());
+			});
 		});
 
 		// Load initial mods from modLoader

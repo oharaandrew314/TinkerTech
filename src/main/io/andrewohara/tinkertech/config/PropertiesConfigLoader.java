@@ -39,7 +39,14 @@ public class PropertiesConfigLoader implements ConfigLoader {
 			properties.load(is);
 		}
 
-		config.setGameDataPath(Paths.get(properties.getProperty("gameData")));
+		try {
+			Path path = Paths.get(properties.getProperty("gameData"));
+			config.setGameDataPath(path);
+		} catch (Exception e) {
+			osContext.getDataPath().ifPresent(path -> {
+				config.setGameDataPath(path);
+			});
+		}
 
 		while (!config.isValid()) {
 			if (configController.show()) {
