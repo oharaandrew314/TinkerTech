@@ -11,26 +11,31 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
-import io.andrewohara.tinkertech.config.Config;
 import io.andrewohara.tinkertech.mediators.WebClient;
 import io.andrewohara.tinkertech.models.Download;
 import io.andrewohara.tinkertech.models.Listing;
 import io.andrewohara.tinkertech.views.ErrorHandler;
+import javafx.beans.value.ObservableValue;
 
 public class Downloader {
 
-	private final Config config;
+	private final ObservableValue<Path> downloadsPath, modsPath;
 	private final ErrorHandler errorHandler;
 	private final Executor downloadExecutor;
 	private final WebClient webClient;
 
 	@Inject
-	protected Downloader(ErrorHandler errorHandler, Executor downloadExecutor, Config config, WebClient webClient) {
+	protected Downloader(
+			ErrorHandler errorHandler, Executor downloadExecutor, WebClient webClient,
+			@Named("modsPath") ObservableValue<Path> modsPath, @Named("downloadsPath") ObservableValue<Path> downloadsPath) {
 		this.errorHandler = errorHandler;
 		this.downloadExecutor = downloadExecutor;
-		this.config = config;
 		this.webClient = webClient;
+
+		this.downloadsPath = downloadsPath;
+		this.modsPath = modsPath;
 	}
 
 	public Download download(Listing listing) throws DownloadNotSupportedException {
@@ -44,8 +49,8 @@ public class Downloader {
 			// Do nothing.  Use indeterminate totalBytes
 		}
 
-		Path downloadPath = config.getDownloadPath().resolve(listing.getLatestRelease().getFilename());
-		Path destinationPath = config.getModsPath().resolve(listing.getLatestRelease().getFilename());
+		Path downloadPath = downloadsPath.getValue().resolve(listing.getLatestRelease().getFilename());
+		Path destinationPath = modsPath.getValue().resolve(listing.getLatestRelease().getFilename());
 
 		RunnableDownload download = new RunnableDownload(listing, stream, downloadPath, destinationPath, totalBytes);
 		downloadExecutor.execute(download);

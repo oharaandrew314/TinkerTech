@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 import com.google.inject.Inject;
@@ -15,21 +17,29 @@ import io.andrewohara.tinkertech.views.ConfigController;
 public class PropertiesConfigLoader implements ConfigLoader {
 
 	private final OSContext osContext;
-	private final PropertiesConfig config;
+	private final EditableConfig config;
 	private final ConfigController configController;
 
+	private final Properties properties = new Properties();
+
 	@Inject
-	protected PropertiesConfigLoader(PropertiesConfig config, OSContext osContext, ConfigController configController) {
+	protected PropertiesConfigLoader(EditableConfig config, OSContext osContext, ConfigController configController) {
 		this.config = config;
 		this.osContext = osContext;
 		this.configController = configController;
+
+		config.gameDataPath().addListener((prop, oldValue, newValue) -> {
+			properties.setProperty("gameData", newValue.toString());
+		});
 	}
 
 	@Override
 	public void load() throws IOException {
 		try (InputStream is = Files.newInputStream(getConfigPath())) {
-			config.getProperties().load(is);
+			properties.load(is);
 		}
+
+		config.setGameDataPath(Paths.get(properties.getProperty("gameData")));
 
 		while (!config.isValid()) {
 			if (configController.show()) {
@@ -41,7 +51,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
 	@Override
 	public void save() throws IOException {
 		try (OutputStream os = Files.newOutputStream(getConfigPath())) {
-			config.getProperties().store(os, null);
+			properties.store(os, null);
 		}
 	}
 

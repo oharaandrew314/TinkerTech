@@ -7,25 +7,26 @@ import java.nio.file.Path;
 import org.controlsfx.control.PropertySheet;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
-import io.andrewohara.tinkertech.config.Config;
 import io.andrewohara.tinkertech.config.ConfigLoader;
 import io.andrewohara.tinkertech.views.properties.PathPropertyEditor;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 
 public class ConfigControllerImpl implements ConfigController {
 
-	private final Config config;
 	private final ConfigLoader configLoader;
 	private final ErrorHandler errorHandler;
+	private final ObservableValue<Path> modsPath;
 
 	@Inject
-	protected ConfigControllerImpl(Config config, ConfigLoader configLoader, ErrorHandler errorHandler) {
-		this.config = config;
+	protected ConfigControllerImpl(ConfigLoader configLoader, ErrorHandler errorHandler, @Named("modsPath") ObservableValue<Path> modsPath) {
 		this.configLoader = configLoader;
 		this.errorHandler = errorHandler;
+		this.modsPath = modsPath;
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class ConfigControllerImpl implements ConfigController {
 		propertySheet.setSearchBoxVisible(false);
 		propertySheet.setModeSwitcherVisible(false);
 
-		CustomPropertyItem<Path> gameDataItem = new CustomPropertyItem<>("Paths#Game Data Path", "Path to the Factorio user data.", config.getModsPath().getParent());
+		CustomPropertyItem<Path> gameDataItem = new CustomPropertyItem<>("Paths#Game Data Path", "Path to the Factorio user data.", modsPath.getValue().getParent());
 		gameDataItem.setRequired(true);
 		gameDataItem.setPropertyEditorClass(PathPropertyEditor.class);
 		propertySheet.getItems().add(gameDataItem);

@@ -5,8 +5,8 @@ import java.nio.file.Path;
 import javafx.beans.value.ObservableValue;
 
 public interface Config {
-	Path getDownloadPath();
-	Path getModsPath();
+	ObservableValue<Path> downloadsPath();
 	ObservableValue<Path> modsPath();
+	ObservableValue<Path> gameDataPath();
 	boolean isValid();
 }

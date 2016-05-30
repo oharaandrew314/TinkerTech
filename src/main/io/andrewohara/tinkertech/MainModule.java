@@ -1,5 +1,6 @@
 package io.andrewohara.tinkertech;
 
+import java.nio.file.Path;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -10,11 +11,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Named;
 
 import io.andrewohara.tinkertech.config.Config;
+import io.andrewohara.tinkertech.config.ConfigImpl;
 import io.andrewohara.tinkertech.config.ConfigLoader;
 import io.andrewohara.tinkertech.config.EditableConfig;
-import io.andrewohara.tinkertech.config.PropertiesConfig;
 import io.andrewohara.tinkertech.config.PropertiesConfigLoader;
 import io.andrewohara.tinkertech.mediators.FactorioModsMediator;
 import io.andrewohara.tinkertech.mediators.Mediator;
@@ -27,6 +29,7 @@ import io.andrewohara.tinkertech.views.ConfigControllerImpl;
 import io.andrewohara.tinkertech.views.DialogErrorHandler;
 import io.andrewohara.tinkertech.views.ErrorHandler;
 import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
 
 public class MainModule extends AbstractModule {
 
@@ -37,8 +40,8 @@ public class MainModule extends AbstractModule {
 		bind(Mediator.class).to(FactorioModsMediator.class);
 		bind(ErrorHandler.class).to(DialogErrorHandler.class);
 		bind(DirectoryWatchService.class).to(DirectoryWatchServiceImpl.class);
-		bind(Config.class).to(PropertiesConfig.class);
-		bind(EditableConfig.class).to(PropertiesConfig.class);
+		bind(Config.class).to(ConfigImpl.class);
+		bind(EditableConfig.class).to(ConfigImpl.class);
 		bind(ConfigLoader.class).to(PropertiesConfigLoader.class);
 		bind(ConfigController.class).to(ConfigControllerImpl.class);
 
@@ -56,5 +59,17 @@ public class MainModule extends AbstractModule {
 	@Provides
 	public Executor provideDownloadExecutor() {
 		return Executors.newFixedThreadPool(4);
+	}
+
+	@Named("modsPath")
+	@Provides
+	public ObservableValue<Path> provideModsPath(Config config) {
+		return config.modsPath();
+	}
+
+	@Named("downloadsPath")
+	@Provides
+	public ObservableValue<Path> provideDownloadsPath(Config config) {
+		return config.downloadsPath();
 	}
 }
